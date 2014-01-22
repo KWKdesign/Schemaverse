@@ -45,6 +45,9 @@ REVOKE ALL ON planet_miners FROM players;
 GRANT SELECT ON planets TO players;
 GRANT UPDATE ON planets TO players;
 
+REVOKE ALL ON planets_in_range FROM players;
+GRANT SELECT ON planets_in_range TO players;
+
 REVOKE ALL ON event FROM players;
 GRANT SELECT ON my_events TO players;
 
