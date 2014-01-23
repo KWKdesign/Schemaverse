@@ -38,6 +38,8 @@ GRANT SELECT ON my_ships_flight_recorder TO players;
 REVOKE ALL ON ship FROM players;
 REVOKE ALL ON ship_id_seq FROM players;
 
+REVOKE ALL ON leader_board FROM players;
+GRANT SELECT ON leader_board TO players;
 
 REVOKE ALL ON planet FROM players;
 REVOKE ALL ON planet_id_seq FROM players;
