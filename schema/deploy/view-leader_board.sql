@@ -1,4 +1,7 @@
 -- Deploy view-leader_board
+-- requires: table-player
+-- requires: table-player_round_stats
+-- requires: sequence-round_seq
 
 BEGIN;
 

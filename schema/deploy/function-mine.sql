@@ -3,26 +3,25 @@
 -- requires: table-planet
 -- requires: function-in_range_planet
 
-BEGIN;
+begin;
 
 
-CREATE OR REPLACE FUNCTION mine(ship_id integer, planet_id integer)
-  RETURNS boolean AS
-$BODY$
-BEGIN
-	SET search_path to public;
-	IF ACTION_PERMISSION_CHECK(ship_id) AND (IN_RANGE_PLANET(ship_id, planet_id)) THEN
-		INSERT INTO planet_miners VALUES(planet_id, ship_id);
-		UPDATE ship SET last_action_tic=(SELECT last_value FROM tic_seq) WHERE id=ship_id;
-		RETURN 't';
-	ELSE
-		EXECUTE 'NOTIFY ' || get_player_error_channel() ||', ''Mining ' || planet_id || ' with ship '|| ship_id ||' failed'';';
-		RETURN 'f';
-	END IF;
+create or replace function mine(ship_id integer, planet_id integer)
+    returns boolean as
+$body$
+begin
+	set search_path to public;
+	if action_permission_check( ship_id ) and in_range_planet( ship_id, planet_id ) then
+		insert into planet_miners values( planet_id, ship_id );
+		update ship set last_action_tic = ( select last_value from tic_seq ) where id = ship_id;
+		return 't';
+	else
+		execute 'notify ' || get_player_error_channel() ||', ''Mining ' || planet_id || ' with ship '|| ship_id ||' failed'';';
+		return 'f';
+	end if;
+end
+$body$
+language plpgsql volatile security definer
+cost 100;
 
-END
-$BODY$
-  LANGUAGE plpgsql VOLATILE SECURITY DEFINER
-  COST 100;
-
-COMMIT;
+commit;

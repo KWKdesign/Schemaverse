@@ -2,68 +2,65 @@
 -- requires: table-trophy
 -- requires: type-trophy_winner
 
-BEGIN;
+begin;
 
 
-CREATE OR REPLACE FUNCTION trophy_script_update()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-       current_round integer;
+create or replace function trophy_script_update()
+  returns trigger as
+$body$
+declare
+    current_round integer;
 	secret character varying;
-
 	player_id integer;
-BEGIN
+begin
 
-	player_id := GET_PLAYER_ID(SESSION_USER);
+	player_id := get_player_id( session_user );
 
-	IF  SESSION_USER = 'schemaverse' THEN
-	       IF NEW.approved='t' AND OLD.approved='f' THEN
-			IF NEW.round_started=0 THEN
-				SELECT last_value INTO NEW.round_started FROM round_seq;
-			END IF;
+	if  session_user = 'schemaverse' then
+        if new.approved = 't' and old.approved = 'f' then
+            if new.round_started = 0 then
+				select last_value into new.round_started from round_seq;
+			end if;
 
-		        secret := 'trophy_script_' || (RANDOM()*1000000)::integer;
-       		 EXECUTE 'CREATE OR REPLACE FUNCTION TROPHY_SCRIPT_'|| NEW.id ||'(_round_id integer) RETURNS SETOF trophy_winner AS $'||secret||'$
-		        DECLARE
-				this_trophy_id integer;
-				this_round integer; -- Deprecated, use _round_id in your script instead
-				 winner trophy_winner%rowtype;
-       		         ' || NEW.script_declarations || '
-		        BEGIN
-       		         this_trophy_id := '|| NEW.id||';
-       		         SELECT last_value INTO this_round FROM round_seq; 
-	       	         ' || NEW.script || '
-			 RETURN;
-	       	 END $'||secret||'$ LANGUAGE plpgsql;'::TEXT;
+            secret := 'trophy_script_' || (random()*1000000)::integer;
+            execute 'create or replace function trophy_script_'|| new.id ||'(_round_id integer) returns setof trophy_winner as $'||secret||'$
+            declare
+            this_trophy_id integer;
+            this_round integer; -- deprecated, use _round_id in your script instead
+            winner trophy_winner%rowtype;
+            ' || new.script_declarations || '
+            begin
+            this_trophy_id := '|| new.id||';
+            select last_value into this_round from round_seq; 
+            ' || new.script || '
+            return;
+            end $'||secret||'$ language plpgsql;'::text;
 
-		 EXECUTE 'REVOKE ALL ON FUNCTION TROPHY_SCRIPT_'|| NEW.id ||'(integer) FROM PUBLIC'::TEXT;
-       		 EXECUTE 'REVOKE ALL ON FUNCTION TROPHY_SCRIPT_'|| NEW.id ||'(integer) FROM players'::TEXT;
-		 EXECUTE 'GRANT EXECUTE ON FUNCTION TROPHY_SCRIPT_'|| NEW.id ||'(integer) TO schemaverse'::TEXT;
-		END IF;
-	ELSEIF NOT player_id = OLD.creator THEN
-		RETURN OLD;
-	ELSE 
-		IF NOT OLD.approved = NEW.approved THEN
-			NEW.approved='f';
-		END IF;
+            execute 'revoke all on function trophy_script_'|| new.id ||'(integer) from public'::text;
+            execute 'revoke all on function trophy_script_'|| new.id ||'(integer) from players'::text;
+            execute 'grant execute on function trophy_script_'|| new.id ||'(integer) to schemaverse'::text;
+		end if;
+	elseif not player_id = old.creator then
+		return old;
+	else 
+		if not old.approved = new.approved then
+			new.approved = 'f';
+		end if;
 
-		IF NOT ((NEW.script = OLD.script) AND (NEW.script_declarations = OLD.script_declarations)) THEN
-			NEW.approved='f';	         
-	       END IF;
-	END IF;
+		if not ( ( new.script = old.script ) and ( new.script_declarations = old.script_declarations ) ) then
+			new.approved = 'f';	         
+	       end if;
+	end if;
 
-       RETURN NEW;
-END $BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
+       return new;
+end $body$ language plpgsql volatile
+cost 100;
 
+create trigger trophy_script_update
+  before update
+  on trophy
+  for each row
+  execute procedure trophy_script_update();
+alter table trophy enable trigger trophy_script_update;
 
-CREATE TRIGGER trophy_script_update
-  BEFORE UPDATE
-  ON trophy
-  FOR EACH ROW
-  EXECUTE PROCEDURE trophy_script_update();
-ALTER TABLE trophy DISABLE TRIGGER trophy_script_update;
-
-COMMIT;
+commit;

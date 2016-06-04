@@ -1,26 +1,26 @@
 -- Deploy trigger-update_planet
 -- requires: table-planet
 
-BEGIN;
+begin;
 
-CREATE OR REPLACE FUNCTION update_planet()
-  RETURNS trigger AS
-$BODY$
-BEGIN
-	IF NEW.conqueror_id!=OLD.conqueror_id THEN
-		INSERT INTO event(action, player_id_1, player_id_2, referencing_id, location, public, tic)
-			VALUES('CONQUER',NEW.conqueror_id,OLD.conqueror_id, NEW.id , NEW.location, 't',(SELECT last_value FROM tic_seq));
-	END IF;
-	RETURN NEW;	
-END
-$BODY$
-  LANGUAGE plpgsql VOLATILE SECURITY DEFINER
-  COST 100;
+create or replace function update_planet()
+  returns trigger as
+$body$
+begin
+	if new.conqueror_id != old.conqueror_id then
+		insert into event( action, player_id_1, player_id_2, referencing_id, location, public, tic )
+			values( 'CONQUER', new.conqueror_id, old.conqueror_id, new.id , new.location, 't',( select last_value from tic_seq ) );
+	end if;
+	return new;	
+end
+$body$
+  language plpgsql volatile security definer
+  cost 100;
 
-CREATE TRIGGER update_planet
-  AFTER UPDATE
-  ON planet
-  FOR EACH ROW
-  EXECUTE PROCEDURE update_planet();
+create trigger update_planet
+  after update
+  on planet
+  for each row
+  execute procedure update_planet();
 
-COMMIT;
+commit;

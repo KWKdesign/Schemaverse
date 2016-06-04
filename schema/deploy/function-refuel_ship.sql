@@ -1,13 +1,13 @@
--- Deploy function-refuel_ship
+-- deploy function-refuel_ship
 -- requires: table-ship
 
-BEGIN;
+begin;
 
 
-CREATE OR REPLACE FUNCTION refuel_ship(ship_id integer)
-  RETURNS integer AS
-$BODY$
-DECLARE
+create or replace function refuel_ship(ship_id integer)
+  returns integer as
+$body$
+declare
 	current_fuel_reserve bigint;
 	new_fuel_reserve bigint;
 	
@@ -15,31 +15,31 @@ DECLARE
 	new_ship_fuel bigint;
 	
 	max_ship_fuel bigint;
-BEGIN
-	SET search_path to public;
+begin
+	set search_path to public;
 
-	SELECT fuel_reserve INTO current_fuel_reserve FROM player WHERE username=SESSION_USER;
-	SELECT current_fuel, max_fuel INTO current_ship_fuel, max_ship_fuel FROM ship WHERE id=ship_id;
+	select fuel_reserve into current_fuel_reserve from player where username=session_user;
+	select current_fuel, max_fuel into current_ship_fuel, max_ship_fuel from ship where id=ship_id;
 
 	
-	new_fuel_reserve = current_fuel_reserve - (max_ship_fuel - current_ship_fuel);
-	IF new_fuel_reserve < 0 THEN
-		new_ship_fuel = max_ship_fuel - (@new_fuel_reserve);
+	new_fuel_reserve = current_fuel_reserve - ( max_ship_fuel - current_ship_fuel );
+	if new_fuel_reserve < 0 then
+		new_ship_fuel = max_ship_fuel - ( @new_fuel_reserve );
 		new_fuel_reserve = 0;
-	ELSE
+	else
 		new_ship_fuel = max_ship_fuel;
-	END IF;
+	end if;
 	
-	UPDATE ship SET current_fuel=new_ship_fuel WHERE id=ship_id;
-	UPDATE player SET fuel_reserve=new_fuel_reserve WHERE username=SESSION_USER;
+	update ship set current_fuel = new_ship_fuel where id = ship_id;
+	update player set fuel_reserve = new_fuel_reserve where username = session_user;
 
-	INSERT INTO event(action, player_id_1, ship_id_1, descriptor_numeric, public, tic)
-		VALUES('REFUEL_SHIP',GET_PLAYER_ID(SESSION_USER), ship_id , new_ship_fuel, 'f',(SELECT last_value FROM tic_seq));
+	insert into event( action, player_id_1, ship_id_1, descriptor_numeric, public, tic )
+    values( 'REFUEL_SHIP', get_player_id( session_user ), ship_id , new_ship_fuel, 'f', ( select last_value from tic_seq ) );
 
-	RETURN new_ship_fuel;
-END
-$BODY$
-  LANGUAGE plpgsql VOLATILE SECURITY DEFINER
-  COST 100;
+	return new_ship_fuel;
+end
+$body$
+  language plpgsql volatile security definer
+  cost 100;
 
-COMMIT;
+commit;

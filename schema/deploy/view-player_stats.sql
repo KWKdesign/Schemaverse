@@ -1,4 +1,7 @@
 -- Deploy view-player_stats
+-- requires: table-player
+-- requires: view-online_players
+-- requires: sequence-round_seq
 
 BEGIN;
 

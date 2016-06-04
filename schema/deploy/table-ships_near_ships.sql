@@ -5,7 +5,6 @@
 
 BEGIN;
 
-
 create unlogged table ships_near_ships (
        first_ship integer references ship(id) on delete cascade,
         player_id integer references player(id) on delete cascade,

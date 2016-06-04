@@ -2,19 +2,21 @@
 -- requires: table-ship
 -- requires: table-planet
 
-BEGIN;
+begin;
 
-CREATE OR REPLACE FUNCTION in_range_planet(ship_id integer, planet_id integer)
-  RETURNS boolean AS
-$BODY$
-	SET search_path to public;
+create or replace function in_range_planet( ship_id integer, planet_id integer )
+  returns boolean as
+$body$
+	set search_path to public;
 	select exists (select 1 from planet p, ship s
-	       	       where 
-		       	  s.id = $1 and p.id = $2 and
-                          not s.destroyed and
-                          CIRCLE(s.location, s.range) @> CIRCLE(p.location, 1));
-$BODY$
-  LANGUAGE sql VOLATILE SECURITY DEFINER
-  COST 100;
+	      where 1=1
+		  and s.id = $1
+          and p.id = $2
+          and not s.destroyed
+          and circle( s.location, s.range ) @> circle( p.location, 1 ) )
+      );
+$body$
+language sql volatile security definer
+cost 100;
 
-COMMIT;
+commit;

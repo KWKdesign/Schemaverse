@@ -1,6 +1,8 @@
 -- Deploy function-update_ships_near_ships
 -- requires: table-ships_near_ships
+-- requires: table-planet
 -- requires: table-ship
+-- requires: sequence-tic_seq
 
 BEGIN;
 

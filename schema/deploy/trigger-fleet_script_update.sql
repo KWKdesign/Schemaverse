@@ -24,12 +24,12 @@ BEGIN
 		RETURN NEW;
 	END IF;
 
-	IF NEW.last_script_update_tic = current_tic THEN
-		NEW.script := OLD.script;
-		NEW.script_declarations := OLD.script_declarations;
-		EXECUTE 'NOTIFY ' || get_player_error_channel() ||', ''Fleet scripts can only be updated once a tic. While you wait why not brush up on your PL/pgSQL skills? '';';
-		RETURN NEW;
-	END IF;
+	-- IF NEW.last_script_update_tic = current_tic THEN
+		-- NEW.script := OLD.script;
+		-- NEW.script_declarations := OLD.script_declarations;
+		-- EXECUTE 'NOTIFY ' || get_player_error_channel() ||', ''Fleet scripts can only be updated once a tic. While you wait why not brush up on your PL/pgSQL skills? '';';
+		-- RETURN NEW;
+	-- END IF;
 
 	NEW.last_script_update_tic := current_tic;
 
