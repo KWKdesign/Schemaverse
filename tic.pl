@@ -39,7 +39,7 @@ my $db_username = 'schemaverse';
 my $tic_w = AnyEvent->idle( cb => sub { # don't wait -- testing
 # my $tic_w = AnyEvent->timer( interval => 60, cb => sub { # wait 60 -- live
 
-    my $dbh = DBI->connect( 'dbi:Pg:dbname='.$db_name.';host=localhost', $db_username );
+    my $dbh = DBI->connect( 'dbi:Pg:dbname='.$db_name, $db_username );
     say strftime( 'vacuum analyze -- Start: '.$dt_fmt, localtime );
     my $t_vac1 = Benchmark->new();
     $dbh->do('vacuum analyze');
