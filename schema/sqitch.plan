@@ -87,8 +87,6 @@ table-player_overall_stats 2013-12-01T18:28:35Z Joshua McDougall <jmcdougall@bit
 view-current_round_stats 2013-12-01T18:30:02Z Joshua McDougall <jmcdougall@bitcoinsultants.com> # Stores the full stats current in the round
 table-round_stats 2013-12-01T18:33:48Z Joshua McDougall <jmcdougall@bitcoinsultants.com> # Stores the current stats of the round
 function-round_control 2013-12-01T18:35:25Z Joshua McDougall <jmcdougall@bitcoinsultants.com> # Handles the round completion and new game setup
-indexes 2013-12-01T18:37:52Z Joshua McDougall <jmcdougall@bitcoinsultants.com> # Lazily applies all the indexes
-permissions 2013-12-01T18:38:22Z Joshua McDougall <jmcdougall@bitcoinsultants.com> # Lazily applies all the schema permissions
 view-leader_board [table-player table-player_round_stats sequence-round_seq] 2014-01-23T20:02:06Z KWKdesign <kevin.klingelhofer@gmail.com># view-leader_board
 view-player_stats [table-player view-online_players sequence-round_seq] 2014-01-23T20:45:21Z KWKdesign <kevin.klingelhofer@gmail.com># view-player_stats
 function-get_player_rgb [table-player] 2014-01-23T20:52:08Z KWKdesign <kevin.klingelhofer@gmail.com># function-get_player_rgb
@@ -97,3 +95,5 @@ table-ships_near_planets [table-planet table-ship] 2014-01-23T20:55:31Z KWKdesig
 function-update_ships_near_planets [table-ships_near_planets table-planet table-ship sequence-tic_seq] 2014-01-23T20:55:59Z KWKdesign <kevin.klingelhofer@gmail.com># function-update_ships_near_planets
 table-ships_near_ships [table-planet table-ship] 2014-01-23T20:56:34Z KWKdesign <kevin.klingelhofer@gmail.com># table-ships_near_ships
 function-update_ships_near_ships [table-ships_near_ships table-planet table-ship sequence-tic_seq] 2014-01-23T20:58:16Z KWKdesign <kevin.klingelhofer@gmail.com># function-update_ships_near_ships
+indexes 2013-12-01T18:37:52Z Joshua McDougall <jmcdougall@bitcoinsultants.com> # Lazily applies all the indexes
+permissions 2013-12-01T18:38:22Z Joshua McDougall <jmcdougall@bitcoinsultants.com> # Lazily applies all the schema permissions
