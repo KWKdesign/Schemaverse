@@ -14,7 +14,7 @@ $body$
           and p.id = $2
           and not s.destroyed
           and circle( s.location, s.range ) @> circle( p.location, 1 ) )
-      );
+      ;
 $body$
 language sql volatile security definer
 cost 100;
