@@ -310,7 +310,9 @@ Update stat_log table
     say '#' x 20 for ( 1..2 );
 
     # Update graphs
-    system( 'cd /home/schemaverse/schemaverse-graphs ; perl update.pl' );
+    if ( -e '/home/schemaverse/schemaverse-graphs' ) {
+      system( 'cd /home/schemaverse/schemaverse-graphs ; perl update.pl' );
+    }
     
     if ( $shutdown == 1 ) {
         say 'Shutting down.';
